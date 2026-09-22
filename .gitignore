@@ -9,3 +9,9 @@ media/
 .pytest_cache/
 .ruff_cache/
 .DS_Store
+.voiceover_cache/
+docs/_build/
+
+# Explicitly track media assets
+!assets/*.mp4
+!assets/*.png
