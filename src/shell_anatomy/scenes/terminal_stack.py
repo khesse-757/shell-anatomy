@@ -77,7 +77,9 @@ class SilentService(SpeechService):
         Returns:
             A dictionary containing input text, metadata, and relative audio file path.
         """
-        cache_dir_path = Path(cache_dir) if cache_dir is not None else Path(self.cache_dir)
+        cache_dir_path = (
+            Path(cache_dir) if cache_dir is not None else Path(self.cache_dir)
+        )
         cache_dir_path.mkdir(parents=True, exist_ok=True)
 
         input_data = {"input_text": text, "service": "silent"}
@@ -168,7 +170,9 @@ class TerminalHierarchyScene(VoiceoverScene):
         btns = VGroup(btn_r, btn_y, btn_g).arrange(RIGHT, buff=0.12)
         btns.move_to(term_bg.get_corner(UP + LEFT) + RIGHT * 0.45 + DOWN * 0.3)
 
-        term_title = Text("Terminal Emulator", font="Monospace", font_size=13, color=TERMINAL_COLOR)
+        term_title = Text(
+            "Terminal Emulator", font="Monospace", font_size=13, color=TERMINAL_COLOR
+        )
         term_title.next_to(btns, RIGHT, buff=0.35)
 
         title_sep = Line(
@@ -200,10 +204,20 @@ class TerminalHierarchyScene(VoiceoverScene):
         )
         shell_box.next_to(term_bg, DOWN, buff=0.5)
 
-        shell_header = Text("Shell Process Memory (PID: 41209)", font="Monospace", font_size=14, color=SHELL_COLOR)
-        shell_header.move_to(shell_box.get_corner(UP + LEFT) + RIGHT * 0.5 + DOWN * 0.35, aligned_edge=LEFT)
+        shell_header = Text(
+            "Shell Process Memory (PID: 41209)",
+            font="Monospace",
+            font_size=14,
+            color=SHELL_COLOR,
+        )
+        shell_header.move_to(
+            shell_box.get_corner(UP + LEFT) + RIGHT * 0.5 + DOWN * 0.35,
+            aligned_edge=LEFT,
+        )
 
-        env_label = Text("Environment Map", font="Monospace", font_size=12, color=TEXT_COLOR)
+        env_label = Text(
+            "Environment Map", font="Monospace", font_size=12, color=TEXT_COLOR
+        )
         env_label.next_to(shell_header, DOWN, buff=0.25, aligned_edge=LEFT)
 
         r1_k = Text("USER", font="Monospace", font_size=14, color=BORDER_COLOR)
@@ -221,9 +235,13 @@ class TerminalHierarchyScene(VoiceoverScene):
         r3_v = Text("/usr/bin:/bin", font="Monospace", font_size=14, color=BORDER_COLOR)
         row_path = VGroup(r3_k, r3_sep, r3_v).arrange(RIGHT, buff=0.1)
 
-        env_table = VGroup(row_user, row_shell, row_path).arrange(DOWN, aligned_edge=LEFT, buff=0.2)
+        env_table = VGroup(row_user, row_shell, row_path).arrange(
+            DOWN, aligned_edge=LEFT, buff=0.2
+        )
         env_table.next_to(env_label, DOWN, buff=0.2, aligned_edge=LEFT)
-        env_surround = SurroundingRectangle(env_table, color=BORDER_COLOR, buff=0.18, corner_radius=0.08)
+        env_surround = SurroundingRectangle(
+            env_table, color=BORDER_COLOR, buff=0.18, corner_radius=0.08
+        )
 
         with self.voiceover(
             text="When you type into a terminal window, the terminal emulator simply handles the visuals and accepts raw keystrokes."
@@ -236,16 +254,22 @@ class TerminalHierarchyScene(VoiceoverScene):
             text="Running inside it is the shell, an active process with its own PID and a private memory space."
         ):
             self.play(FadeIn(shell_box), FadeIn(shell_header), run_time=1.0)
-            self.play(FadeIn(env_label), FadeIn(env_surround), FadeIn(env_table), run_time=1.0)
+            self.play(
+                FadeIn(env_label), FadeIn(env_surround), FadeIn(env_table), run_time=1.0
+            )
 
         with self.voiceover(
             text="Before executing the command, the shell intercepts the dollar sign expansion operator and searches its internal environment map for the key SHELL."
         ):
-            query_token = Text("lookup: $SHELL", font="Monospace", font_size=14, color=TERMINAL_COLOR)
+            query_token = Text(
+                "lookup: $SHELL", font="Monospace", font_size=14, color=TERMINAL_COLOR
+            )
             query_token.move_to(cmd_text.get_right() + LEFT * 0.4)
             target_query_pos = r2_k.get_left() + LEFT * 1.5
             self.play(query_token.animate.move_to(target_query_pos), run_time=1.2)
-            self.play(Indicate(r2_k, color=TERMINAL_COLOR, scale_factor=1.12), run_time=0.8)
+            self.play(
+                Indicate(r2_k, color=TERMINAL_COLOR, scale_factor=1.12), run_time=0.8
+            )
 
         with self.voiceover(
             text="The resolved value, the path to the Z-shell binary, is extracted and returned to the terminal output."
@@ -253,11 +277,15 @@ class TerminalHierarchyScene(VoiceoverScene):
             extracted_val = r2_v.copy()
             self.play(
                 FadeOut(query_token),
-                extracted_val.animate.set_color(TERMINAL_COLOR).scale(1.1).shift(RIGHT * 0.3),
+                extracted_val.animate.set_color(TERMINAL_COLOR)
+                .scale(1.1)
+                .shift(RIGHT * 0.3),
                 run_time=0.8,
             )
             self.play(
-                extracted_val.animate.move_to(out_text.get_center()).set_color(TEXT_COLOR).scale(18 / 16.5),
+                extracted_val.animate.move_to(out_text.get_center())
+                .set_color(TEXT_COLOR)
+                .scale(18 / 16.5),
                 run_time=1.2,
             )
             self.remove(extracted_val)
