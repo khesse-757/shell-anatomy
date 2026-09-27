@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       UV_SYSTEM_PYTHON: 1
+      UV_BREAK_SYSTEM_PACKAGES: 1
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,17 +33,19 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y libpango1.0-dev libcairo2-dev ffmpeg libsox-fmt-all sox
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
           version: "latest"
 
-      - name: Set up Python
-        run: uv python install 3.11
-
       - name: Install dependencies
-        run: uv pip install --system -e ".[docs]"
+        run: uv pip install --system --break-system-packages -e ".[docs]"
 
       - name: Build documentation
         run: sphinx-build -b html docs docs/_build/html
