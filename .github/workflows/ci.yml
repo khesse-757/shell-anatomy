@@ -14,16 +14,17 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ['3.11', '3.12']
+    env:
+      UV_SYSTEM_PYTHON: 1
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install system dependencies (Ubuntu)
+      - name: Install system graphics dependencies (Ubuntu)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg libsox-fmt-all sox libpango1.0-dev libcairo2-dev
+          sudo apt-get update && sudo apt-get install -y libpango1.0-dev libcairo2-dev ffmpeg libsox-fmt-all sox
 
       - name: Install system dependencies (macOS)
         if: runner.os == 'macOS'
@@ -39,15 +40,15 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: uv pip install -e ".[dev,docs]"
+      - name: Install Python dependencies
+        run: uv pip install --system -e ".[dev,docs]"
 
       - name: Lint with ruff
         run: |
-          uv run ruff check .
-          uv run ruff format --check .
+          ruff check .
+          ruff format --check .
 
-      - name: Run tests
+      - name: Run tests with pytest
         env:
           VOICEOVER_BACKEND: none
-        run: uv run pytest -v
+        run: pytest -v
